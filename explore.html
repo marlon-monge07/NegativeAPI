@@ -215,30 +215,13 @@
       font-weight: 600; cursor: pointer; margin-top: .5rem; font-family: inherit;
     }
 
-    /* ── Numbers API ── */
-    .num-border { border-left: 3px solid var(--cyan); }
-    .tag-num { background: rgba(6,182,212,.15); color: var(--cyan); }
-    .num-layout { text-align: center; }
-    .num-big {
-      font-size: 4rem; font-weight: 900; margin-bottom: .5rem;
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    /* ── Fun Facts ── */
+    .funfact-border { border-left: 3px solid var(--green); }
+    .tag-funfact { background: rgba(34,197,94,.15); color: var(--green); }
+    .funfact-text {
+      font-size: 1.2rem; font-weight: 600; line-height: 1.6;
+      min-height: 60px; transition: opacity .4s;
     }
-    .num-fact {
-      font-size: 1.1rem; font-weight: 500; line-height: 1.6;
-      color: var(--text-muted); min-height: 50px; transition: opacity .4s;
-    }
-    .num-type-btns {
-      display: flex; gap: .5rem; justify-content: center; margin-top: 1rem;
-    }
-    .num-type-btn {
-      padding: .35rem .85rem; border-radius: 6px; font-size: .75rem;
-      font-weight: 600; font-family: inherit; cursor: pointer;
-      border: 1px solid var(--border); background: var(--bg);
-      color: var(--text-muted); transition: all .2s;
-    }
-    .num-type-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(6,182,212,.1); }
-    .num-type-btn:hover { border-color: var(--cyan); }
 
     /* ── Shared ── */
     .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s, transform .6s; }
@@ -294,6 +277,28 @@
     <p>Six more APIs. Because the internet is full of weird, wonderful, free data — and we couldn't resist plugging into all of it.</p>
   </section>
 
+  <!-- NASA APOD -->
+  <section>
+    <div class="api-panel nasa-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">🚀</span>
+          <h2>NASA — Astronomy Picture of the Day</h2>
+        </div>
+        <span class="panel-tag tag-nasa">NASA APOD</span>
+      </div>
+      <div class="panel-body">
+        <div id="nasa-content">
+          <div style="text-align:center; padding:2rem;"><span class="spinner"></span></div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> api.nasa.gov</div>
+        <button class="refresh-btn" onclick="loadNasa()">Random Day <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
   <!-- Chuck Norris -->
   <section>
     <div class="api-panel chuck-border fade-in">
@@ -344,53 +349,22 @@
     </div>
   </section>
 
-  <!-- Numbers API -->
+  <!-- Fun Facts -->
   <section>
-    <div class="api-panel num-border fade-in">
+    <div class="api-panel funfact-border fade-in">
       <div class="panel-header">
         <div class="panel-title">
-          <span class="emoji">🔢</span>
-          <h2>Number Trivia</h2>
+          <span class="emoji">🎲</span>
+          <h2>Fun Facts</h2>
         </div>
-        <span class="panel-tag tag-num">NumbersAPI</span>
+        <span class="panel-tag tag-funfact">UselessFacts</span>
       </div>
       <div class="panel-body">
-        <div class="num-layout">
-          <div class="num-big" id="num-big">?</div>
-          <div class="num-fact quote-fade" id="num-fact">Loading a number that matters (to someone)...</div>
-          <div class="num-type-btns">
-            <button class="num-type-btn active" data-type="trivia" onclick="setNumType('trivia')">Trivia</button>
-            <button class="num-type-btn" data-type="math" onclick="setNumType('math')">Math</button>
-            <button class="num-type-btn" data-type="date" onclick="setNumType('date')">Date</button>
-            <button class="num-type-btn" data-type="year" onclick="setNumType('year')">Year</button>
-          </div>
-        </div>
+        <div class="funfact-text quote-fade" id="funfact-text">Loading a fact you never knew you didn't need...</div>
       </div>
       <div class="panel-footer">
-        <div class="panel-source"><span class="dot"></span> numbersapi.com</div>
-        <button class="refresh-btn" onclick="loadNumber()">Next Number <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- NASA APOD -->
-  <section>
-    <div class="api-panel nasa-border fade-in">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span class="emoji">🚀</span>
-          <h2>NASA — Astronomy Picture of the Day</h2>
-        </div>
-        <span class="panel-tag tag-nasa">NASA APOD</span>
-      </div>
-      <div class="panel-body">
-        <div id="nasa-content">
-          <div style="text-align:center; padding:2rem;"><span class="spinner"></span></div>
-        </div>
-      </div>
-      <div class="panel-footer">
-        <div class="panel-source"><span class="dot"></span> api.nasa.gov</div>
-        <button class="refresh-btn" onclick="loadNasa()">Random Day <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="panel-source"><span class="dot"></span> uselessfacts.jsph.pl</div>
+        <button class="refresh-btn" onclick="loadFunFact()">Next Fact <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div>
   </section>
@@ -478,46 +452,20 @@
       }
     }
 
-    // ── Numbers API ──
-    let numType = 'trivia';
-
-    function setNumType(type) {
-      numType = type;
-      document.querySelectorAll('.num-type-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.type === type);
-      });
-      loadNumber();
-    }
-
-    async function loadNumber() {
-      const el = document.getElementById('num-fact');
-      const big = document.getElementById('num-big');
+    // ── Fun Facts ──
+    async function loadFunFact() {
+      const el = document.getElementById('funfact-text');
       el.classList.add('fading');
       try {
-        const num = numType === 'date'
-          ? `${Math.floor(Math.random()*12)+1}/${Math.floor(Math.random()*28)+1}`
-          : numType === 'year'
-            ? Math.floor(Math.random() * 2025) + 1
-            : Math.floor(Math.random() * 10000);
-        const r = await fetchWithTimeout(`http://numbersapi.com/${num}/${numType}?json`, 5000);
+        const r = await fetchWithTimeout('https://uselessfacts.jsph.pl/api/v2/facts/random?language=en');
         const d = await r.json();
         setTimeout(() => {
-          big.textContent = d.number ?? num;
-          el.textContent = d.text || `${num} is just a number. Or is it?`;
+          el.textContent = d.text || 'No facts found. The universe is keeping secrets.';
           el.classList.remove('fading');
         }, 300);
       } catch {
-        const num = Math.floor(Math.random() * 9999) + 1;
-        const fallbacks = [
-          `${num} is the number of times this API has let us down.`,
-          `${num} — even numbers need a break sometimes.`,
-          `Fun fact: ${num} is just ${num}. The API is offline, so that's all you get.`,
-          `${num} refused to share its trivia today. Mood.`,
-          `The number ${num} is currently in witness protection. Check back later.`,
-        ];
         setTimeout(() => {
-          big.textContent = num;
-          el.textContent = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+          el.textContent = 'The fun facts API took a personal day. Even APIs need self-care.';
           el.classList.remove('fading');
         }, 300);
       }
@@ -577,7 +525,7 @@
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     // ── Init ──
-    Promise.allSettled([loadChuck(), loadPokemon(), loadNumber(), loadNasa()]);
+    Promise.allSettled([loadNasa(), loadChuck(), loadPokemon(), loadFunFact()]);
   </script>
 
 </body>
