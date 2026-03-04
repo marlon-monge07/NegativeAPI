@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeclineAI Labs — The Fun API Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-2: #27272a;
+      --border: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #f43f5e;
+      --accent-2: #8b5cf6;
+      --orange: #f97316;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --blue: #3b82f6;
+      --pink: #ec4899;
+      --gradient: linear-gradient(135deg, #f43f5e, #8b5cf6);
+      --gradient-subtle: linear-gradient(135deg, rgba(244,63,94,.15), rgba(139,92,246,.15));
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; overflow-x: hidden;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; background: rgba(9,9,11,.8);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-weight: 800; font-size: 1.35rem;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .logo a { text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: .9rem;
+      font-weight: 500; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .active { color: var(--text); }
+    .back-btn {
+      padding: .45rem 1rem; border-radius: 8px; font-weight: 600;
+      font-size: .8rem; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text);
+      text-decoration: none; transition: border-color .2s;
+    }
+    .back-btn:hover { border-color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 8rem 2rem 3rem; text-align: center;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -30%; left: 50%;
+      transform: translateX(-50%); width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(59,130,246,.1) 0%, rgba(139,92,246,.06) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .4rem 1rem; border-radius: 100px; font-size: .8rem;
+      font-weight: 600; background: linear-gradient(135deg, rgba(59,130,246,.15), rgba(6,182,212,.15));
+      border: 1px solid rgba(59,130,246,.25); color: var(--blue);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+      line-height: 1.1; max-width: 700px; margin: 0 auto 1rem;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p {
+      font-size: 1.1rem; color: var(--text-muted);
+      max-width: 550px; margin: 0 auto;
+    }
+
+    /* ── Section ── */
+    section { padding: 3rem 2rem; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: .75rem;
+    }
+
+    /* ── Shared Card ── */
+    .api-panel {
+      max-width: 900px; margin: 0 auto 2rem;
+      border-radius: 20px; background: var(--surface);
+      border: 1px solid var(--border); overflow: hidden;
+      transition: transform .3s;
+    }
+    .api-panel:hover { transform: translateY(-2px); }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      display: flex; align-items: center; gap: .65rem;
+    }
+    .panel-title .emoji { font-size: 1.5rem; }
+    .panel-title h2 { font-size: 1.15rem; font-weight: 700; }
+    .panel-tag {
+      padding: .2rem .6rem; border-radius: 6px; font-size: .65rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .panel-body { padding: 1.75rem; }
+    .panel-footer {
+      padding: 1rem 1.75rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-source {
+      font-size: .7rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: .35rem;
+    }
+    .panel-source .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+    .refresh-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .45rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-size: .8rem;
+      font-weight: 600; font-family: inherit; cursor: pointer; transition: all .2s;
+    }
+    .refresh-btn:hover { border-color: var(--accent); background: rgba(244,63,94,.1); }
+    .refresh-btn:active { transform: scale(.95); }
+    .refresh-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .refresh-btn svg { width: 14px; height: 14px; }
+
+    /* ── Chuck Norris ── */
+    .chuck-border { border-left: 3px solid var(--orange); }
+    .tag-chuck { background: rgba(249,115,22,.15); color: var(--orange); }
+    .chuck-fact {
+      font-size: 1.2rem; font-weight: 600; line-height: 1.6;
+      min-height: 60px; transition: opacity .4s;
+    }
+
+    /* ── Pokemon ── */
+    .poke-border { border-left: 3px solid var(--yellow); }
+    .tag-poke { background: rgba(234,179,8,.15); color: var(--yellow); }
+    .poke-layout { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+    .poke-sprite {
+      width: 180px; height: 180px; border-radius: 16px;
+      background: var(--bg); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+      image-rendering: pixelated;
+    }
+    .poke-sprite img { width: 150px; height: 150px; image-rendering: pixelated; }
+    .poke-info { flex: 1; min-width: 200px; }
+    .poke-name {
+      font-size: 1.75rem; font-weight: 800; text-transform: capitalize;
+      margin-bottom: .25rem;
+    }
+    .poke-id { color: var(--text-muted); font-size: .85rem; margin-bottom: .75rem; }
+    .poke-types { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .poke-type {
+      padding: .25rem .75rem; border-radius: 6px; font-size: .75rem;
+      font-weight: 700; text-transform: capitalize;
+    }
+    .type-fire { background: rgba(249,115,22,.2); color: var(--orange); }
+    .type-water { background: rgba(59,130,246,.2); color: var(--blue); }
+    .type-grass { background: rgba(34,197,94,.2); color: var(--green); }
+    .type-electric { background: rgba(234,179,8,.2); color: var(--yellow); }
+    .type-psychic { background: rgba(236,72,153,.2); color: var(--pink); }
+    .type-normal { background: rgba(161,161,170,.2); color: var(--text-muted); }
+    .type-default { background: rgba(139,92,246,.2); color: var(--accent-2); }
+    .poke-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .poke-stat-label { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+    .poke-stat-value { font-size: 1.1rem; font-weight: 700; }
+
+    /* ── Star Wars ── */
+    .sw-border { border-left: 3px solid var(--yellow); }
+    .tag-sw { background: rgba(234,179,8,.15); color: var(--yellow); }
+    .sw-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .sw-profile { flex: 1; min-width: 220px; }
+    .sw-name { font-size: 1.75rem; font-weight: 800; margin-bottom: .75rem; }
+    .sw-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .75rem; }
+    .sw-stat {
+      padding: .75rem; border-radius: 10px; background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .sw-stat-label { font-size: .65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+    .sw-stat-value { font-size: 1rem; font-weight: 700; text-transform: capitalize; }
+
+    /* ── NASA ── */
+    .nasa-border { border-left: 3px solid var(--blue); }
+    .tag-nasa { background: rgba(59,130,246,.15); color: var(--blue); }
+    .nasa-img {
+      width: 100%; border-radius: 12px; margin-bottom: 1rem;
+      max-height: 450px; object-fit: cover;
+    }
+    .nasa-video {
+      width: 100%; border-radius: 12px; margin-bottom: 1rem;
+      aspect-ratio: 16/9; border: none;
+    }
+    .nasa-title {
+      font-size: 1.35rem; font-weight: 800; margin-bottom: .5rem;
+    }
+    .nasa-date { color: var(--text-muted); font-size: .85rem; margin-bottom: .75rem; }
+    .nasa-desc {
+      color: var(--text-muted); font-size: .9rem; line-height: 1.7;
+      max-height: 150px; overflow: hidden; position: relative;
+    }
+    .nasa-desc.expanded { max-height: none; }
+    .nasa-desc:not(.expanded)::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 60px; background: linear-gradient(transparent, var(--surface));
+    }
+    .expand-btn {
+      background: none; border: none; color: var(--blue); font-size: .85rem;
+      font-weight: 600; cursor: pointer; margin-top: .5rem; font-family: inherit;
+    }
+
+    /* ── Numbers API ── */
+    .num-border { border-left: 3px solid var(--cyan); }
+    .tag-num { background: rgba(6,182,212,.15); color: var(--cyan); }
+    .num-layout { text-align: center; }
+    .num-big {
+      font-size: 4rem; font-weight: 900; margin-bottom: .5rem;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .num-fact {
+      font-size: 1.1rem; font-weight: 500; line-height: 1.6;
+      color: var(--text-muted); min-height: 50px; transition: opacity .4s;
+    }
+    .num-type-btns {
+      display: flex; gap: .5rem; justify-content: center; margin-top: 1rem;
+    }
+    .num-type-btn {
+      padding: .35rem .85rem; border-radius: 6px; font-size: .75rem;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text-muted); transition: all .2s;
+    }
+    .num-type-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(6,182,212,.1); }
+    .num-type-btn:hover { border-color: var(--cyan); }
+
+    /* ── Fun Translations ── */
+    .fun-border { border-left: 3px solid var(--green); }
+    .tag-fun { background: rgba(34,197,94,.15); color: var(--green); }
+    .fun-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .fun-input {
+      flex: 1; min-width: 200px; padding: .75rem 1rem;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text);
+      font-size: .95rem; font-family: inherit; outline: none;
+      transition: border-color .2s;
+    }
+    .fun-input:focus { border-color: var(--green); }
+    .fun-select {
+      padding: .75rem 1rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text); font-size: .9rem; font-family: inherit;
+      outline: none; cursor: pointer;
+    }
+    .fun-translate-btn {
+      padding: .75rem 1.5rem; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, var(--green), #059669);
+      color: #fff; font-size: .9rem; font-weight: 700;
+      font-family: inherit; cursor: pointer; transition: opacity .2s;
+    }
+    .fun-translate-btn:hover { opacity: .85; }
+    .fun-translate-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .fun-result {
+      padding: 1.25rem; border-radius: 12px; background: var(--bg);
+      border: 1px solid var(--border); min-height: 60px;
+    }
+    .fun-result-text {
+      font-size: 1.05rem; font-weight: 500; font-style: italic;
+      transition: opacity .4s;
+    }
+    .fun-rate-note {
+      font-size: .7rem; color: var(--text-muted); margin-top: .75rem;
+    }
+
+    /* ── Shared ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s, transform .6s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .quote-fade { transition: opacity .4s; }
+    .quote-fade.fading { opacity: 0; }
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid var(--text-muted); border-top-color: transparent;
+      border-radius: 50%; animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: .85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: .75rem 1rem; }
+      .nav-links { gap: .75rem; }
+      .hero { padding: 6rem 1.25rem 2rem; }
+      section { padding: 2rem 1rem; }
+      .panel-header { padding: 1rem 1.25rem; flex-wrap: wrap; gap: .5rem; }
+      .panel-body { padding: 1.25rem; }
+      .poke-layout { justify-content: center; text-align: center; }
+      .poke-stats { justify-items: center; }
+      .sw-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="logo"><a href="index.html">Decline<span style="font-weight:400;">AI</span></a></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="explore.html" class="active">Labs</a></li>
+      <li><a href="index.html#dashboard">Dashboard</a></li>
+      <li><a href="index.html#gauntlet">Gauntlet</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge">Experimental Playground</div>
+    <h1>DeclineAI <span class="gradient-text">Labs</span></h1>
+    <p>Six more APIs. Because the internet is full of weird, wonderful, free data — and we couldn't resist plugging into all of it.</p>
+  </section>
+
+  <!-- Chuck Norris -->
+  <section>
+    <div class="api-panel chuck-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">🤠</span>
+          <h2>Chuck Norris Facts</h2>
+        </div>
+        <span class="panel-tag tag-chuck">ChuckNorris.io</span>
+      </div>
+      <div class="panel-body">
+        <div class="chuck-fact quote-fade" id="chuck-text">Loading a fact so tough it does its own push-ups...</div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> api.chucknorris.io</div>
+        <button class="refresh-btn" onclick="loadChuck()">Next Fact <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pokemon -->
+  <section>
+    <div class="api-panel poke-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">⚡</span>
+          <h2>Random Pokemon</h2>
+        </div>
+        <span class="panel-tag tag-poke">PokeAPI</span>
+      </div>
+      <div class="panel-body">
+        <div class="poke-layout" id="poke-content">
+          <div class="poke-sprite" id="poke-sprite-wrap">
+            <span class="spinner"></span>
+          </div>
+          <div class="poke-info">
+            <div class="poke-name" id="poke-name">Loading...</div>
+            <div class="poke-id" id="poke-id">#???</div>
+            <div class="poke-types" id="poke-types"></div>
+            <div class="poke-stats" id="poke-stats"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> pokeapi.co</div>
+        <button class="refresh-btn" onclick="loadPokemon()">Next Pokemon <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Star Wars -->
+  <section>
+    <div class="api-panel sw-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">⭐</span>
+          <h2>Star Wars Character</h2>
+        </div>
+        <span class="panel-tag tag-sw">SWAPI</span>
+      </div>
+      <div class="panel-body">
+        <div class="sw-layout" id="sw-content">
+          <div class="sw-profile" style="width:100%">
+            <div class="sw-name" id="sw-name">Loading from a galaxy far, far away...</div>
+            <div class="sw-stats" id="sw-stats"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> swapi.dev</div>
+        <button class="refresh-btn" onclick="loadStarWars()">Next Character <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Numbers API -->
+  <section>
+    <div class="api-panel num-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">🔢</span>
+          <h2>Number Trivia</h2>
+        </div>
+        <span class="panel-tag tag-num">NumbersAPI</span>
+      </div>
+      <div class="panel-body">
+        <div class="num-layout">
+          <div class="num-big" id="num-big">?</div>
+          <div class="num-fact quote-fade" id="num-fact">Loading a number that matters (to someone)...</div>
+          <div class="num-type-btns">
+            <button class="num-type-btn active" data-type="trivia" onclick="setNumType('trivia')">Trivia</button>
+            <button class="num-type-btn" data-type="math" onclick="setNumType('math')">Math</button>
+            <button class="num-type-btn" data-type="date" onclick="setNumType('date')">Date</button>
+            <button class="num-type-btn" data-type="year" onclick="setNumType('year')">Year</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> numbersapi.com</div>
+        <button class="refresh-btn" onclick="loadNumber()">Next Number <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fun Translations -->
+  <section>
+    <div class="api-panel fun-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">🗣️</span>
+          <h2>Fun Translations</h2>
+        </div>
+        <span class="panel-tag tag-fun">FunTranslations</span>
+      </div>
+      <div class="panel-body">
+        <div class="fun-row">
+          <input class="fun-input" id="fun-input" type="text" placeholder='Type something to translate... e.g. "I am your father"' />
+          <select class="fun-select" id="fun-lang">
+            <option value="yoda">Yoda</option>
+            <option value="pirate">Pirate</option>
+            <option value="minion">Minion</option>
+            <option value="dothraki">Dothraki</option>
+            <option value="shakespeare">Shakespeare</option>
+          </select>
+          <button class="fun-translate-btn" id="fun-btn" onclick="translateText()">Translate</button>
+        </div>
+        <div class="fun-result">
+          <div class="fun-result-text" id="fun-result">Your translation will appear here...</div>
+        </div>
+        <div class="fun-rate-note">Free tier: 5 calls/hour, 60 calls/day. Use wisely, young padawan.</div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> funtranslations.com</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NASA APOD -->
+  <section>
+    <div class="api-panel nasa-border fade-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="emoji">🚀</span>
+          <h2>NASA — Astronomy Picture of the Day</h2>
+        </div>
+        <span class="panel-tag tag-nasa">NASA APOD</span>
+      </div>
+      <div class="panel-body">
+        <div id="nasa-content">
+          <div style="text-align:center; padding:2rem;"><span class="spinner"></span></div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-source"><span class="dot"></span> api.nasa.gov</div>
+        <button class="refresh-btn" onclick="loadNasa()">Random Day <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Part of <a href="index.html">DeclineAI</a> — Built with curiosity and free APIs
+    </p>
+    <p style="margin-top:.5rem; font-size:.75rem; opacity:.5;">
+      © 2026 DeclineAI Labs™ — No APIs were harmed in the making of this page.
+    </p>
+  </footer>
+
+  <script>
+    function fetchWithTimeout(url, ms = 6000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      return fetch(url, { signal: controller.signal, cache: 'no-store' })
+        .finally(() => clearTimeout(timer));
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    // ── Chuck Norris ──
+    async function loadChuck() {
+      const el = document.getElementById('chuck-text');
+      el.classList.add('fading');
+      try {
+        const r = await fetchWithTimeout('https://api.chucknorris.io/jokes/random');
+        const d = await r.json();
+        setTimeout(() => {
+          el.textContent = d.value;
+          el.classList.remove('fading');
+        }, 300);
+      } catch {
+        setTimeout(() => {
+          el.textContent = 'Chuck Norris once roundhouse kicked the API so hard it went offline.';
+          el.classList.remove('fading');
+        }, 300);
+      }
+    }
+
+    // ── Pokemon ──
+    async function loadPokemon() {
+      const id = Math.floor(Math.random() * 1025) + 1;
+      try {
+        const r = await fetchWithTimeout(`https://pokeapi.co/api/v2/pokemon/${id}`, 8000);
+        const d = await r.json();
+
+        document.getElementById('poke-name').textContent = d.name;
+        document.getElementById('poke-id').textContent = `#${String(d.id).padStart(4, '0')}`;
+
+        const sprite = d.sprites.other?.['official-artwork']?.front_default
+          || d.sprites.front_default
+          || '';
+        document.getElementById('poke-sprite-wrap').innerHTML = sprite
+          ? `<img src="${sprite}" alt="${d.name}" />`
+          : '<span style="color:var(--text-muted)">No sprite</span>';
+
+        const typeColors = { fire:'type-fire', water:'type-water', grass:'type-grass',
+          electric:'type-electric', psychic:'type-psychic', normal:'type-normal' };
+        document.getElementById('poke-types').innerHTML = d.types.map(t =>
+          `<span class="poke-type ${typeColors[t.type.name] || 'type-default'}">${t.type.name}</span>`
+        ).join('');
+
+        const statsMap = { hp:'HP', attack:'ATK', defense:'DEF', speed:'SPD',
+          'special-attack':'SP.ATK', 'special-defense':'SP.DEF' };
+        document.getElementById('poke-stats').innerHTML = d.stats.map(s => `
+          <div>
+            <div class="poke-stat-label">${statsMap[s.stat.name] || s.stat.name}</div>
+            <div class="poke-stat-value">${s.base_stat}</div>
+          </div>
+        `).join('');
+      } catch {
+        document.getElementById('poke-name').textContent = 'MissingNo.';
+        document.getElementById('poke-id').textContent = '#0000';
+        document.getElementById('poke-sprite-wrap').innerHTML = '<span style="font-size:3rem">❓</span>';
+        document.getElementById('poke-types').innerHTML = '<span class="poke-type type-default">glitch</span>';
+        document.getElementById('poke-stats').innerHTML = '';
+      }
+    }
+
+    // ── Star Wars ──
+    async function loadStarWars() {
+      const id = Math.floor(Math.random() * 82) + 1;
+      try {
+        const r = await fetchWithTimeout(`https://swapi.dev/api/people/${id}/?format=json`, 8000);
+        const d = await r.json();
+
+        document.getElementById('sw-name').textContent = d.name;
+
+        const stats = [
+          { label: 'Height', value: d.height !== 'unknown' ? `${d.height} cm` : 'Unknown' },
+          { label: 'Mass', value: d.mass !== 'unknown' ? `${d.mass} kg` : 'Unknown' },
+          { label: 'Hair Color', value: d.hair_color },
+          { label: 'Eye Color', value: d.eye_color },
+          { label: 'Birth Year', value: d.birth_year },
+          { label: 'Gender', value: d.gender },
+        ];
+        document.getElementById('sw-stats').innerHTML = stats.map(s => `
+          <div class="sw-stat">
+            <div class="sw-stat-label">${s.label}</div>
+            <div class="sw-stat-value">${s.value}</div>
+          </div>
+        `).join('');
+      } catch {
+        document.getElementById('sw-name').textContent = 'Disturbance in the Force...';
+        document.getElementById('sw-stats').innerHTML = '<div class="sw-stat"><div class="sw-stat-label">Error</div><div class="sw-stat-value">API unavailable</div></div>';
+      }
+    }
+
+    // ── Numbers API ──
+    let numType = 'trivia';
+
+    function setNumType(type) {
+      numType = type;
+      document.querySelectorAll('.num-type-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.type === type);
+      });
+      loadNumber();
+    }
+
+    async function loadNumber() {
+      const el = document.getElementById('num-fact');
+      const big = document.getElementById('num-big');
+      el.classList.add('fading');
+      try {
+        const num = numType === 'date'
+          ? `${Math.floor(Math.random()*12)+1}/${Math.floor(Math.random()*28)+1}`
+          : numType === 'year'
+            ? Math.floor(Math.random() * 2025) + 1
+            : Math.floor(Math.random() * 10000);
+        const r = await fetchWithTimeout(`http://numbersapi.com/${num}/${numType}?json`, 5000);
+        const d = await r.json();
+        setTimeout(() => {
+          big.textContent = d.number ?? num;
+          el.textContent = d.text || `${num} is just a number. Or is it?`;
+          el.classList.remove('fading');
+        }, 300);
+      } catch {
+        const num = Math.floor(Math.random() * 9999) + 1;
+        const fallbacks = [
+          `${num} is the number of times this API has let us down.`,
+          `${num} — even numbers need a break sometimes.`,
+          `Fun fact: ${num} is just ${num}. The API is offline, so that's all you get.`,
+          `${num} refused to share its trivia today. Mood.`,
+          `The number ${num} is currently in witness protection. Check back later.`,
+        ];
+        setTimeout(() => {
+          big.textContent = num;
+          el.textContent = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+          el.classList.remove('fading');
+        }, 300);
+      }
+    }
+
+    // ── Fun Translations ──
+    async function translateText() {
+      const input = document.getElementById('fun-input');
+      const lang = document.getElementById('fun-lang').value;
+      const btn = document.getElementById('fun-btn');
+      const result = document.getElementById('fun-result');
+
+      if (!input.value.trim()) input.value = 'I am your father';
+
+      btn.disabled = true;
+      btn.textContent = 'Translating...';
+      result.classList.add('fading');
+
+      try {
+        const r = await fetchWithTimeout(
+          `https://api.funtranslations.com/translate/${lang}.json?text=${encodeURIComponent(input.value)}`,
+          8000
+        );
+        const d = await r.json();
+        if (d.error) throw new Error(d.error.message || 'Rate limited');
+        setTimeout(() => {
+          result.textContent = `"${d.contents.translated}"`;
+          result.style.color = 'var(--green)';
+          result.classList.remove('fading');
+        }, 300);
+      } catch (e) {
+        setTimeout(() => {
+          result.textContent = e.message?.includes('limit')
+            ? 'Rate limit reached — the free tier allows 5 calls/hour. Try again later!'
+            : 'Translation failed — the API might be rate-limited or unavailable.';
+          result.style.color = 'var(--accent)';
+          result.classList.remove('fading');
+        }, 300);
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Translate';
+    }
+
+    // ── NASA APOD ──
+    async function loadNasa() {
+      const container = document.getElementById('nasa-content');
+      container.innerHTML = '<div style="text-align:center;padding:2rem"><span class="spinner"></span></div>';
+
+      try {
+        const randomDate = new Date(
+          Date.now() - Math.floor(Math.random() * 365 * 5) * 86400000
+        ).toISOString().split('T')[0];
+
+        const r = await fetchWithTimeout(
+          `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=${randomDate}`,
+          10000
+        );
+        const d = await r.json();
+
+        let media = '';
+        if (d.media_type === 'image') {
+          media = `<img class="nasa-img" src="${d.url}" alt="${escapeHtml(d.title)}" loading="lazy" />`;
+        } else if (d.media_type === 'video') {
+          media = `<iframe class="nasa-video" src="${d.url}" allowfullscreen></iframe>`;
+        }
+
+        container.innerHTML = `
+          ${media}
+          <div class="nasa-title">${escapeHtml(d.title)}</div>
+          <div class="nasa-date">${d.date}</div>
+          <div class="nasa-desc" id="nasa-desc">${escapeHtml(d.explanation)}</div>
+          <button class="expand-btn" onclick="toggleNasaDesc()">Read more</button>
+        `;
+      } catch {
+        container.innerHTML = `
+          <div style="text-align:center;padding:2rem">
+            <div style="font-size:3rem;margin-bottom:1rem">🌌</div>
+            <div style="color:var(--text-muted)">Houston, we have a problem. The NASA API didn't respond.</div>
+          </div>
+        `;
+      }
+    }
+
+    function toggleNasaDesc() {
+      const desc = document.getElementById('nasa-desc');
+      const btn = desc.nextElementSibling;
+      desc.classList.toggle('expanded');
+      btn.textContent = desc.classList.contains('expanded') ? 'Read less' : 'Read more';
+    }
+
+    // ── Scroll animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Enter key for Fun Translations ──
+    document.getElementById('fun-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') translateText();
+    });
+
+    // ── Init ──
+    Promise.allSettled([loadChuck(), loadPokemon(), loadStarWars(), loadNumber(), loadNasa()]);
+  </script>
+
+</body>
+</html>

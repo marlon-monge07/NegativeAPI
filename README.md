@@ -10,6 +10,8 @@ DeclineAI is a fake AI startup landing page built entirely for fun. Every piece 
 
 ## APIs Used
 
+### Home — Negativity Engine
+
 | API | What It Does | Endpoint |
 |-----|-------------|----------|
 | [No As A Service (NaaS)](https://github.com/hotheadhacker/no-as-a-service) | Creative rejections | `naas.isalman.dev/no` |
@@ -19,6 +21,17 @@ DeclineAI is a fake AI startup landing page built entirely for fun. Every piece 
 | [Matt's Insult API](https://insult.mattbas.org/api/) | Elaborate roasts | `insult.mattbas.org/api/insult.json` |
 | [Official Joke API](https://github.com/15Dkatz/official_joke_api) | Bad jokes | `official-joke-api.appspot.com/random_joke` |
 
+### Labs — API Playground ([explore.html](https://marlon-monge07.github.io/NegativeAPI/explore.html))
+
+| API | What It Does | Endpoint |
+|-----|-------------|----------|
+| [Chuck Norris API](https://api.chucknorris.io) | Random Chuck Norris facts | `api.chucknorris.io/jokes/random` |
+| [PokeAPI](https://pokeapi.co) | Random Pokemon with sprites and stats | `pokeapi.co/api/v2/pokemon/{id}` |
+| [SWAPI](https://swapi.dev) | Random Star Wars character profiles | `swapi.dev/api/people/{id}` |
+| [Numbers API](http://numbersapi.com) | Number trivia, math, dates, years | `numbersapi.com/{number}/{type}` |
+| [Fun Translations](https://funtranslations.com/api/) | Yoda, Pirate, Shakespeare & more | `api.funtranslations.com/translate/{lang}` |
+| [NASA APOD](https://api.nasa.gov) | Astronomy Picture of the Day | `api.nasa.gov/planetary/apod` |
+
 ## Features
 
 - **Hero Quote** — A rotating rejection from the NaaS API with a visual countdown timer and manual "Next" button.
@@ -26,10 +39,11 @@ DeclineAI is a fake AI startup landing page built entirely for fun. Every piece 
 - **Negativity Dashboard** — Six cards in a grid, each connected to a different API, all auto-refreshing with individual "Next" buttons.
 - **The Gauntlet** — Type your idea and watch all 6 APIs take turns destroying it one by one. Responses are pre-fetched in parallel for speed, then revealed sequentially for dramatic effect.
 - **Responsive Design** — Looks good on desktop and mobile.
+- **Labs Page** — A separate playground with Chuck Norris facts, random Pokemon, Star Wars characters, number trivia, fun translations (Yoda, Pirate, etc.), and NASA's Astronomy Picture of the Day.
 
 ## Tech Stack
 
-Zero dependencies. One `index.html` file with vanilla HTML, CSS, and JavaScript.
+Zero dependencies. Two HTML files with vanilla HTML, CSS, and JavaScript.
 
 ## Run Locally
 
