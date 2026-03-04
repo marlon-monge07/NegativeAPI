@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeclineAI — The World's First Honest AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-2: #27272a;
+      --border: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #f43f5e;
+      --accent-2: #8b5cf6;
+      --orange: #f97316;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --gradient: linear-gradient(135deg, #f43f5e, #8b5cf6);
+      --gradient-subtle: linear-gradient(135deg, rgba(244,63,94,.15), rgba(139,92,246,.15));
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(9,9,11,.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-weight: 800; font-size: 1.35rem;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: .9rem;
+      font-weight: 500; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      padding: .55rem 1.25rem; border-radius: 8px; font-weight: 600;
+      font-size: .85rem; border: none; cursor: pointer;
+      background: var(--gradient); color: #fff; transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 8rem 2rem 4rem; position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -50%; left: 50%;
+      transform: translateX(-50%); width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(244,63,94,.12) 0%, rgba(139,92,246,.08) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .4rem 1rem; border-radius: 100px; font-size: .8rem;
+      font-weight: 600; background: var(--gradient-subtle);
+      border: 1px solid rgba(244,63,94,.25); color: var(--accent);
+      margin-bottom: 2rem;
+    }
+    .badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; } 50% { opacity: .3; }
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+      line-height: 1.1; max-width: 800px; margin-bottom: 1.5rem;
+    }
+    .hero h1 .gradient-text {
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p.subtitle {
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 600px; margin-bottom: 2.5rem;
+    }
+
+    /* Quote Card */
+    .quote-card {
+      position: relative; max-width: 700px; width: 100%;
+      padding: 2.5rem; border-radius: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .quote-card::before {
+      content: ''; position: absolute; inset: -1px; border-radius: 20px;
+      background: var(--gradient); z-index: -1; opacity: 0;
+      transition: opacity .4s;
+    }
+    .quote-card:hover::before { opacity: 1; }
+    .quote-card:hover { border-color: transparent; }
+    .quote-icon {
+      font-size: 2.5rem; line-height: 1; margin-bottom: .75rem;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    #hero-quote {
+      font-size: 1.35rem; font-weight: 600; line-height: 1.5;
+      min-height: 4rem; transition: opacity .4s;
+    }
+    .quote-meta {
+      margin-top: 1.25rem; display: flex; align-items: center;
+      justify-content: space-between; color: var(--text-muted); font-size: .8rem;
+    }
+    .quote-controls {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .next-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .45rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-size: .8rem;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+      transition: border-color .2s, background .2s, transform .1s;
+    }
+    .next-btn:hover { border-color: var(--accent); background: rgba(244,63,94,.1); }
+    .next-btn:active { transform: scale(.95); }
+    .next-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .next-btn svg { width: 14px; height: 14px; }
+    .refresh-timer {
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .timer-bar {
+      width: 60px; height: 4px; border-radius: 4px;
+      background: var(--surface-2); overflow: hidden;
+    }
+    .timer-fill {
+      height: 100%; border-radius: 4px; background: var(--gradient);
+      animation: timer-countdown 10s linear infinite;
+    }
+    @keyframes timer-countdown {
+      from { width: 100%; } to { width: 0%; }
+    }
+
+    .hero-stats {
+      display: flex; gap: 3rem; margin-top: 3rem;
+    }
+    .stat { text-align: center; }
+    .stat-value {
+      font-size: 1.75rem; font-weight: 800;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: .8rem; color: var(--text-muted); margin-top: .2rem; }
+
+    /* ── Ticker ── */
+    .ticker-wrap {
+      overflow: hidden; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface); padding: .85rem 0;
+    }
+    .ticker {
+      display: flex; gap: 3rem; white-space: nowrap;
+      animation: ticker-scroll 40s linear infinite;
+    }
+    .ticker:hover { animation-play-state: paused; }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .85rem; font-weight: 500; flex-shrink: 0;
+    }
+    .ticker-tag {
+      padding: .15rem .5rem; border-radius: 4px; font-size: .65rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .tag-reject { background: rgba(244,63,94,.15); color: var(--accent); }
+    .tag-insult { background: rgba(249,115,22,.15); color: var(--orange); }
+    .tag-advice { background: rgba(34,197,94,.15); color: var(--green); }
+    .tag-fact   { background: rgba(6,182,212,.15); color: var(--cyan); }
+    .tag-joke   { background: rgba(234,179,8,.15); color: var(--yellow); }
+    .tag-roast  { background: rgba(139,92,246,.15); color: var(--accent-2); }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── Sections ── */
+    section { padding: 6rem 2rem; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-header h2 {
+      font-size: 2.25rem; font-weight: 800; margin-bottom: .75rem;
+    }
+    .section-header p { color: var(--text-muted); max-width: 550px; margin: 0 auto; }
+
+    /* ── API Dashboard ── */
+    .dashboard-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem; max-width: 1100px; margin: 0 auto;
+    }
+    .api-card {
+      padding: 1.75rem; border-radius: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      transition: transform .3s, border-color .3s;
+      display: flex; flex-direction: column;
+    }
+    .api-card:hover { transform: translateY(-3px); }
+    .api-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .api-card-label {
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .api-card-emoji { font-size: 1.5rem; }
+    .api-card-title { font-weight: 700; font-size: .95rem; }
+    .api-card-source {
+      font-size: .65rem; font-weight: 600; padding: .2rem .5rem;
+      border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .api-card-body {
+      flex: 1; min-height: 80px; display: flex; align-items: center;
+    }
+    .api-card-text {
+      font-size: 1rem; font-weight: 500; line-height: 1.5;
+      transition: opacity .4s;
+    }
+    .api-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 1rem; padding-top: .75rem;
+      border-top: 1px solid var(--border);
+    }
+    .api-card-status {
+      font-size: .7rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: .35rem;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+    }
+    .card-next-btn {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .35rem .75rem; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text); font-size: .75rem; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: all .2s;
+    }
+    .card-next-btn:hover { border-color: var(--accent); }
+    .card-next-btn:active { transform: scale(.95); }
+    .card-next-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .card-next-btn svg { width: 12px; height: 12px; }
+
+    .api-card.card-reject { border-left: 3px solid var(--accent); }
+    .api-card.card-insult { border-left: 3px solid var(--orange); }
+    .api-card.card-advice { border-left: 3px solid var(--green); }
+    .api-card.card-fact   { border-left: 3px solid var(--cyan); }
+    .api-card.card-roast  { border-left: 3px solid var(--accent-2); }
+    .api-card.card-joke   { border-left: 3px solid var(--yellow); }
+
+    /* ── The Gauntlet ── */
+    .gauntlet-section { background: var(--surface); }
+    .gauntlet-container {
+      max-width: 750px; margin: 0 auto;
+    }
+    .gauntlet-input-group {
+      display: flex; gap: .75rem; margin-bottom: 2.5rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .gauntlet-input {
+      flex: 1; min-width: 250px; padding: .85rem 1.25rem;
+      border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text);
+      font-size: 1rem; font-family: inherit; outline: none;
+      transition: border-color .2s;
+    }
+    .gauntlet-input:focus { border-color: var(--accent); }
+    .gauntlet-btn {
+      padding: .85rem 2rem; border-radius: 12px; border: none;
+      background: var(--gradient); color: #fff; font-size: 1rem;
+      font-weight: 700; font-family: inherit; cursor: pointer;
+      transition: opacity .2s, transform .1s;
+    }
+    .gauntlet-btn:hover { opacity: .9; }
+    .gauntlet-btn:active { transform: scale(.97); }
+    .gauntlet-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .gauntlet-steps {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .gauntlet-step {
+      display: flex; gap: 1rem; padding: 1.25rem;
+      border-radius: 14px; background: var(--bg);
+      border: 1px solid var(--border);
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity .5s, transform .5s;
+    }
+    .gauntlet-step.visible {
+      opacity: 1; transform: translateX(0);
+    }
+    .step-number {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .85rem; flex-shrink: 0;
+    }
+    .step-reject .step-number  { background: rgba(244,63,94,.15); color: var(--accent); }
+    .step-insult .step-number  { background: rgba(249,115,22,.15); color: var(--orange); }
+    .step-advice .step-number  { background: rgba(34,197,94,.15); color: var(--green); }
+    .step-fact   .step-number  { background: rgba(6,182,212,.15); color: var(--cyan); }
+    .step-roast  .step-number  { background: rgba(139,92,246,.15); color: var(--accent-2); }
+    .step-joke   .step-number  { background: rgba(234,179,8,.15); color: var(--yellow); }
+    .step-content { flex: 1; }
+    .step-label {
+      font-size: .7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: .25rem;
+    }
+    .step-reject .step-label  { color: var(--accent); }
+    .step-insult .step-label  { color: var(--orange); }
+    .step-advice .step-label  { color: var(--green); }
+    .step-fact   .step-label  { color: var(--cyan); }
+    .step-roast  .step-label  { color: var(--accent-2); }
+    .step-joke   .step-label  { color: var(--yellow); }
+    .step-text { font-size: .95rem; color: var(--text-muted); }
+    .step-text em { font-style: normal; color: var(--text); font-weight: 500; }
+
+    /* ── Features ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+    }
+    .feature-card {
+      padding: 2rem; border-radius: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      transition: transform .3s, border-color .3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px); border-color: var(--accent);
+    }
+    .feature-emoji { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+    .feature-card p { color: var(--text-muted); font-size: .9rem; }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; max-width: 950px; margin: 0 auto;
+    }
+    .pricing-card {
+      padding: 2.5rem 2rem; border-radius: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      text-align: center; position: relative; transition: transform .3s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(244,63,94,.08), var(--surface));
+    }
+    .pricing-card.featured::before {
+      content: 'MOST REJECTED'; position: absolute; top: -12px;
+      left: 50%; transform: translateX(-50%); padding: .3rem 1rem;
+      border-radius: 100px; font-size: .7rem; font-weight: 700;
+      background: var(--gradient); color: #fff;
+    }
+    .pricing-tier { font-weight: 700; font-size: 1.1rem; margin-bottom: .5rem; }
+    .pricing-amount {
+      font-size: 3rem; font-weight: 900; margin: 1rem 0;
+    }
+    .pricing-amount span { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
+    .pricing-features {
+      list-style: none; margin: 1.5rem 0; text-align: left;
+    }
+    .pricing-features li {
+      padding: .5rem 0; font-size: .9rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .pricing-features li::before {
+      content: '✕'; color: var(--accent); font-weight: 700;
+    }
+    .pricing-btn {
+      width: 100%; padding: .75rem; border-radius: 10px;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: opacity .2s;
+    }
+    .pricing-btn-outline {
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+    }
+    .pricing-btn-outline:hover { border-color: var(--text-muted); }
+    .pricing-btn-filled {
+      background: var(--gradient); border: none; color: #fff;
+    }
+    .pricing-btn-filled:hover { opacity: .85; }
+
+    /* ── API Credits Footer ── */
+    .api-credits {
+      padding: 3rem 2rem; background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .api-credits h3 {
+      text-align: center; font-size: 1rem; font-weight: 700;
+      margin-bottom: 1.5rem; color: var(--text-muted);
+    }
+    .credits-grid {
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      justify-content: center; max-width: 900px; margin: 0 auto;
+    }
+    .credit-chip {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .5rem 1rem; border-radius: 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      font-size: .8rem; font-weight: 500;
+      transition: border-color .2s;
+    }
+    .credit-chip:hover { border-color: var(--accent); }
+    .credit-chip a {
+      color: var(--text); text-decoration: none;
+    }
+    .credit-chip a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: .85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Animations ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s, transform .6s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .quote-fade { opacity: 1; transition: opacity .4s; }
+    .quote-fade.fading { opacity: 0; }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid var(--text-muted); border-top-color: transparent;
+      border-radius: 50%; animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+      padding: 1rem 1.5rem; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--accent);
+      font-size: .9rem; font-weight: 500;
+      transform: translateY(120%); opacity: 0;
+      transition: transform .4s, opacity .4s;
+      max-width: 400px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: .75rem 1rem; }
+      .nav-links { display: none; }
+      .hero { padding: 6rem 1.25rem 3rem; }
+      .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+      section { padding: 4rem 1.25rem; }
+      .gauntlet-input-group { flex-direction: column; }
+      .gauntlet-input { min-width: unset; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">Decline<span style="font-weight:400;">AI</span></div>
+    <ul class="nav-links">
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#gauntlet">The Gauntlet</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <button class="nav-cta" onclick="rejectSignup()">Get Rejected Free</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge"><span class="dot"></span> Powered by 6 APIs of Pure Negativity</div>
+    <h1>The World's First AI That's <span class="gradient-text">Actually Honest</span></h1>
+    <p class="subtitle">Six APIs working in perfect disharmony to reject your ideas, insult your intelligence, give you advice you didn't ask for, and teach you facts nobody needs.</p>
+
+    <div class="quote-card fade-in">
+      <div class="quote-icon">"</div>
+      <div id="hero-quote" class="quote-fade">Loading brutal honesty...</div>
+      <div class="quote-meta">
+        <span>DeclineAI v6.0 — Negativity Engine</span>
+        <div class="quote-controls">
+          <div class="refresh-timer">
+            <span>Auto</span>
+            <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+          </div>
+          <button class="next-btn" id="next-btn" onclick="skipToNext()">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-stats fade-in">
+      <div class="stat">
+        <div class="stat-value" id="stat-rejections">2,847,391</div>
+        <div class="stat-label">Ideas Rejected</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">6</div>
+        <div class="stat-label">APIs of Pain</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">99.97%</div>
+        <div class="stat-label">Rejection Rate</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Approvals Ever</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker" id="ticker"></div>
+  </div>
+
+  <!-- API Dashboard -->
+  <section id="dashboard">
+    <div class="section-header fade-in">
+      <h2>Live Negativity Dashboard</h2>
+      <p>Six APIs. One mission. Making you reconsider every life choice. All auto-refreshing every 10 seconds.</p>
+    </div>
+    <div class="dashboard-grid">
+
+      <!-- Card 1: NaaS Rejection -->
+      <div class="api-card card-reject fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">🚫</span>
+            <span class="api-card-title">Rejection</span>
+          </div>
+          <span class="api-card-source tag-reject">NaaS</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-reject">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> naas.isalman.dev</div>
+          <button class="card-next-btn" onclick="refreshCard('reject')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Card 2: Evil Insult -->
+      <div class="api-card card-insult fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">🔥</span>
+            <span class="api-card-title">Evil Insult</span>
+          </div>
+          <span class="api-card-source tag-insult">EvilInsult</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-insult">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> evilinsult.com</div>
+          <button class="card-next-btn" onclick="refreshCard('insult')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Card 3: Unsolicited Advice -->
+      <div class="api-card card-advice fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">💡</span>
+            <span class="api-card-title">Unwanted Advice</span>
+          </div>
+          <span class="api-card-source tag-advice">AdviceSlip</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-advice">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> adviceslip.com</div>
+          <button class="card-next-btn" onclick="refreshCard('advice')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Card 4: Useless Facts -->
+      <div class="api-card card-fact fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">🧠</span>
+            <span class="api-card-title">Useless Knowledge</span>
+          </div>
+          <span class="api-card-source tag-fact">UselessFacts</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-fact">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> uselessfacts.jsph.pl</div>
+          <button class="card-next-btn" onclick="refreshCard('fact')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Card 5: Performance Review (Matt's Insult API) -->
+      <div class="api-card card-roast fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">📋</span>
+            <span class="api-card-title">Performance Review</span>
+          </div>
+          <span class="api-card-source tag-roast">InsultAPI</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-roast">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> insult.mattbas.org</div>
+          <button class="card-next-btn" onclick="refreshCard('roast')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Card 6: Bad Jokes -->
+      <div class="api-card card-joke fade-in">
+        <div class="api-card-header">
+          <div class="api-card-label">
+            <span class="api-card-emoji">😐</span>
+            <span class="api-card-title">Comic "Relief"</span>
+          </div>
+          <span class="api-card-source tag-joke">JokeAPI</span>
+        </div>
+        <div class="api-card-body">
+          <div class="api-card-text quote-fade" id="card-joke">Loading...</div>
+        </div>
+        <div class="api-card-footer">
+          <div class="api-card-status"><span class="status-dot"></span> official-joke-api</div>
+          <button class="card-next-btn" onclick="refreshCard('joke')">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- The Gauntlet -->
+  <section id="gauntlet" class="gauntlet-section">
+    <div class="section-header fade-in">
+      <h2>The Gauntlet</h2>
+      <p>Submit your idea and watch all 6 APIs take turns destroying it. One by one. No mercy.</p>
+    </div>
+    <div class="gauntlet-container fade-in">
+      <div class="gauntlet-input-group">
+        <input class="gauntlet-input" id="idea-input" type="text" placeholder='Type your million-dollar idea... e.g. "Uber for cats"' />
+        <button class="gauntlet-btn" id="gauntlet-btn" onclick="runGauntlet()">Run the Gauntlet</button>
+      </div>
+      <div class="gauntlet-steps" id="gauntlet-steps">
+        <div class="gauntlet-step step-reject" id="g-step-1">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-label">Initial Rejection</div>
+            <div class="step-text" id="g-text-1">Awaiting your terrible idea...</div>
+          </div>
+        </div>
+        <div class="gauntlet-step step-insult" id="g-step-2">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-label">Personal Attack</div>
+            <div class="step-text" id="g-text-2">Standing by to insult...</div>
+          </div>
+        </div>
+        <div class="gauntlet-step step-roast" id="g-step-3">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-label">Performance Review</div>
+            <div class="step-text" id="g-text-3">Preparing your evaluation...</div>
+          </div>
+        </div>
+        <div class="gauntlet-step step-advice" id="g-step-4">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-label">Unsolicited Advice</div>
+            <div class="step-text" id="g-text-4">Loading unwanted wisdom...</div>
+          </div>
+        </div>
+        <div class="gauntlet-step step-fact" id="g-step-5">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <div class="step-label">Consolation Fact</div>
+            <div class="step-text" id="g-text-5">Finding something useless to teach you...</div>
+          </div>
+        </div>
+        <div class="gauntlet-step step-joke" id="g-step-6">
+          <div class="step-number">6</div>
+          <div class="step-content">
+            <div class="step-label">Comic "Relief"</div>
+            <div class="step-text" id="g-text-6">Preparing a bad joke to dull the pain...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="section-header fade-in">
+      <h2>Why 6 APIs of Pain?</h2>
+      <p>Because one way to say "no" was never enough.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">🚫</div>
+        <h3>Rejection Layer</h3>
+        <p>The NaaS API delivers 1000+ creative ways to say "no." Every response is a tiny masterpiece of disappointment.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">🔥</div>
+        <h3>Insult Multiplexer</h3>
+        <p>Two insult APIs working together to ensure no feelings survive. Evil Insult for bluntness, Matt's API for eloquence.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">💡</div>
+        <h3>Advice Nobody Asked For</h3>
+        <p>The Advice Slip API delivers wisdom that's technically correct but emotionally irrelevant to your situation.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">🧠</div>
+        <h3>Facts You'll Never Need</h3>
+        <p>Useless Facts API ensures you leave knowing something new — and equally useless as when you arrived.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">😐</div>
+        <h3>Joke Deflection System</h3>
+        <p>When things get too real, the Joke API deploys humor so bad it circles back to being good. Almost.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-emoji">⚡</div>
+        <h3>Real-time Negativity</h3>
+        <p>All 6 APIs auto-refresh every 10 seconds. The negativity never sleeps, and neither should your self-doubt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="section-header fade-in">
+      <h2>Simple, Transparent Rejection</h2>
+      <p>Every plan includes unlimited disappointment from all 6 APIs.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-amount">$0<span>/mo</span></div>
+        <ul class="pricing-features">
+          <li>100 rejections/month</li>
+          <li>Basic insults (1 API)</li>
+          <li>Weekly useless facts</li>
+          <li>No support (obviously)</li>
+        </ul>
+        <button class="pricing-btn pricing-btn-outline" onclick="rejectSignup()">Get Rejected</button>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="pricing-tier">Professional</div>
+        <div class="pricing-amount">$29<span>/mo</span></div>
+        <ul class="pricing-features">
+          <li>Unlimited rejections</li>
+          <li>All 6 negativity APIs</li>
+          <li>The Gauntlet (unlimited runs)</li>
+          <li>Rejection analytics PDF for your therapist</li>
+        </ul>
+        <button class="pricing-btn pricing-btn-filled" onclick="rejectSignup()">Get Brutalized</button>
+      </div>
+      <div class="pricing-card fade-in">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-amount">$499<span>/mo</span></div>
+        <ul class="pricing-features">
+          <li>Org-wide mass rejection</li>
+          <li>Custom insult training on your codebase</li>
+          <li>SSO (Single Sign-Off)</li>
+          <li>Dedicated rejection manager</li>
+        </ul>
+        <button class="pricing-btn pricing-btn-outline" onclick="rejectSignup()">Contact Rejection Team</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Credits -->
+  <div class="api-credits">
+    <h3>Powered by these (very real) APIs</h3>
+    <div class="credits-grid">
+      <div class="credit-chip">🚫 <a href="https://naas.isalman.dev/no" target="_blank">No As A Service (NaaS)</a></div>
+      <div class="credit-chip">🔥 <a href="https://evilinsult.com" target="_blank">Evil Insult Generator</a></div>
+      <div class="credit-chip">💡 <a href="https://api.adviceslip.com" target="_blank">Advice Slip API</a></div>
+      <div class="credit-chip">🧠 <a href="https://uselessfacts.jsph.pl" target="_blank">Useless Facts API</a></div>
+      <div class="credit-chip">📋 <a href="https://insult.mattbas.org/api/" target="_blank">Matt's Insult API</a></div>
+      <div class="credit-chip">😐 <a href="https://official-joke-api.appspot.com" target="_blank">Official Joke API</a></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Built with 💔 and questionable API choices
+      &nbsp;·&nbsp; DeclineAI is not real (but neither are your startup ideas)
+    </p>
+    <p style="margin-top:.5rem; font-size:.75rem; opacity:.5;">
+      © 2026 DeclineAI™ — All rejections reserved.
+    </p>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── API Endpoints ──
+    const APIS = {
+      reject: 'https://naas.isalman.dev/no',
+      insult: 'https://evilinsult.com/generate_insult.php?lang=en&type=json',
+      advice: 'https://api.adviceslip.com/advice',
+      fact:   'https://uselessfacts.jsph.pl/api/v2/facts/random?language=en',
+      roast:  'https://insult.mattbas.org/api/insult.json',
+      joke:   'https://official-joke-api.appspot.com/random_joke'
+    };
+
+    let rejectionCount = 2_847_391;
+    let heroInterval = null;
+    let dashboardInterval = null;
+
+    // ── Fetchers ──
+    async function fetchReject() {
+      try {
+        const r = await fetch(APIS.reject);
+        const d = await r.json();
+        return d.reason || 'No.';
+      } catch { return 'Even our rejection API rejected you.'; }
+    }
+
+    async function fetchInsult() {
+      try {
+        const r = await fetch(APIS.insult);
+        const d = await r.json();
+        return d.insult || 'You are uninsultable. Wait, no you aren\'t.';
+      } catch { return 'The insult server crashed looking at your code.'; }
+    }
+
+    async function fetchAdvice() {
+      try {
+        const r = await fetch(APIS.advice);
+        const d = await r.json();
+        return d.slip?.advice || 'Just give up.';
+      } catch { return 'Here\'s some advice: stop asking for advice.'; }
+    }
+
+    async function fetchFact() {
+      try {
+        const r = await fetch(APIS.fact);
+        const d = await r.json();
+        return d.text || 'No facts found. Just like your project\'s future.';
+      } catch { return 'Fun fact: this API also gave up on you.'; }
+    }
+
+    async function fetchRoast() {
+      try {
+        const r = await fetch(APIS.roast);
+        const d = await r.json();
+        return d.insult || 'You are impressively mediocre.';
+      } catch { return 'The roast API couldn\'t find words strong enough.'; }
+    }
+
+    async function fetchJoke() {
+      try {
+        const r = await fetch(APIS.joke);
+        const d = await r.json();
+        return d.setup && d.punchline ? `${d.setup} — ${d.punchline}` : 'No joke. Literally.';
+      } catch { return 'Why did the joke API fail? Because even humor gives up sometimes.'; }
+    }
+
+    const FETCHERS = { reject: fetchReject, insult: fetchInsult, advice: fetchAdvice, fact: fetchFact, roast: fetchRoast, joke: fetchJoke };
+
+    // ── Hero Quote ──
+    async function refreshHeroQuote() {
+      const el = document.getElementById('hero-quote');
+      el.classList.add('fading');
+      const quote = await fetchReject();
+      setTimeout(() => {
+        el.textContent = `"${quote}"`;
+        el.classList.remove('fading');
+      }, 400);
+      rejectionCount += Math.floor(Math.random() * 47) + 3;
+      updateCounter();
+      restartTimer();
+    }
+
+    function restartTimer() {
+      const fill = document.getElementById('timer-fill');
+      fill.style.animation = 'none';
+      fill.offsetHeight;
+      fill.style.animation = 'timer-countdown 10s linear';
+    }
+
+    function resetHeroInterval() {
+      clearInterval(heroInterval);
+      heroInterval = setInterval(refreshHeroQuote, 10_000);
+    }
+
+    async function skipToNext() {
+      const btn = document.getElementById('next-btn');
+      btn.disabled = true;
+      await refreshHeroQuote();
+      resetHeroInterval();
+      btn.disabled = false;
+    }
+
+    // ── Dashboard Cards ──
+    async function refreshCard(type) {
+      const el = document.getElementById(`card-${type}`);
+      const btn = el.closest('.api-card').querySelector('.card-next-btn');
+      if (btn) btn.disabled = true;
+      el.classList.add('fading');
+      const text = await FETCHERS[type]();
+      setTimeout(() => {
+        el.textContent = text;
+        el.classList.remove('fading');
+        if (btn) btn.disabled = false;
+      }, 350);
+      rejectionCount++;
+      updateCounter();
+    }
+
+    async function refreshAllCards() {
+      await Promise.allSettled(
+        Object.keys(FETCHERS).map(type => refreshCard(type))
+      );
+    }
+
+    // ── The Gauntlet ──
+    let gauntletRunning = false;
+
+    async function runGauntlet() {
+      if (gauntletRunning) return;
+      gauntletRunning = true;
+
+      const input = document.getElementById('idea-input');
+      const btn = document.getElementById('gauntlet-btn');
+
+      if (!input.value.trim()) input.value = 'Uber for cats';
+      btn.innerHTML = '<span class="spinner"></span> Running...';
+      btn.disabled = true;
+
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById(`g-step-${i}`).classList.remove('visible');
+        document.getElementById(`g-text-${i}`).innerHTML = '<span class="spinner"></span>';
+      }
+
+      const steps = [
+        { id: 1, fetcher: fetchReject,  prefix: 'RE: "' + input.value + '" — ' },
+        { id: 2, fetcher: fetchInsult,  prefix: '' },
+        { id: 3, fetcher: fetchRoast,   prefix: 'Annual review: ' },
+        { id: 4, fetcher: fetchAdvice,  prefix: 'Instead, maybe: ' },
+        { id: 5, fetcher: fetchFact,    prefix: 'Did you know? ' },
+        { id: 6, fetcher: fetchJoke,    prefix: '' },
+      ];
+
+      for (const step of steps) {
+        const stepEl = document.getElementById(`g-step-${step.id}`);
+        stepEl.classList.add('visible');
+
+        await new Promise(r => setTimeout(r, 600));
+        const text = await step.fetcher();
+
+        document.getElementById(`g-text-${step.id}`).innerHTML =
+          `<em>${step.prefix}${text}</em>`;
+
+        rejectionCount++;
+        updateCounter();
+        await new Promise(r => setTimeout(r, 300));
+      }
+
+      btn.textContent = 'Run Again';
+      btn.disabled = false;
+      gauntletRunning = false;
+    }
+
+    // ── Signup Rejection ──
+    async function rejectSignup() {
+      const toast = document.getElementById('toast');
+      const fetcher = [fetchReject, fetchInsult, fetchRoast][Math.floor(Math.random() * 3)];
+      const msg = await fetcher();
+      toast.textContent = `🚫 ${msg}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+      rejectionCount++;
+      updateCounter();
+    }
+
+    // ── Counter ──
+    function updateCounter() {
+      const el = document.getElementById('stat-rejections');
+      el.textContent = rejectionCount.toLocaleString();
+    }
+
+    // ── Live Ticker ──
+    async function buildTicker() {
+      const ticker = document.getElementById('ticker');
+      const tags = [
+        { type: 'tag-reject', label: 'REJECTED', fetcher: fetchReject },
+        { type: 'tag-insult', label: 'INSULT',   fetcher: fetchInsult },
+        { type: 'tag-advice', label: 'ADVICE',   fetcher: fetchAdvice },
+        { type: 'tag-fact',   label: 'FACT',     fetcher: fetchFact },
+        { type: 'tag-roast',  label: 'ROAST',    fetcher: fetchRoast },
+        { type: 'tag-joke',   label: 'JOKE',     fetcher: fetchJoke },
+      ];
+
+      const items = [];
+      const results = await Promise.allSettled(tags.map(t => t.fetcher()));
+
+      results.forEach((r, i) => {
+        const text = r.status === 'fulfilled' ? r.value : 'API too busy rejecting others...';
+        items.push(`<span class="ticker-item"><span class="ticker-tag ${tags[i].type}">${tags[i].label}</span> ${escapeHtml(text)}</span>`);
+      });
+
+      const extraResults = await Promise.allSettled(tags.map(t => t.fetcher()));
+      extraResults.forEach((r, i) => {
+        const text = r.status === 'fulfilled' ? r.value : 'Still busy...';
+        items.push(`<span class="ticker-item"><span class="ticker-tag ${tags[i].type}">${tags[i].label}</span> ${escapeHtml(text)}</span>`);
+      });
+
+      ticker.innerHTML = items.join('') + items.join('');
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    // ── Scroll Animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Initialize ──
+    (async function init() {
+      await Promise.allSettled([
+        refreshHeroQuote(),
+        refreshAllCards(),
+        buildTicker()
+      ]);
+
+      heroInterval = setInterval(refreshHeroQuote, 10_000);
+      dashboardInterval = setInterval(refreshAllCards, 10_000);
+
+      setInterval(() => {
+        rejectionCount += Math.floor(Math.random() * 5) + 1;
+        updateCounter();
+      }, 3_000);
+
+      setInterval(buildTicker, 60_000);
+    })();
+
+    document.getElementById('idea-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') runGauntlet();
+    });
+  </script>
+
+</body>
+</html>
