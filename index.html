@@ -353,56 +353,6 @@
     .feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
     .feature-card p { color: var(--text-muted); font-size: .9rem; }
 
-    /* ── Pricing ── */
-    .pricing-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; max-width: 950px; margin: 0 auto;
-    }
-    .pricing-card {
-      padding: 2.5rem 2rem; border-radius: 16px;
-      background: var(--surface); border: 1px solid var(--border);
-      text-align: center; position: relative; transition: transform .3s;
-    }
-    .pricing-card:hover { transform: translateY(-4px); }
-    .pricing-card.featured {
-      border-color: var(--accent);
-      background: linear-gradient(180deg, rgba(244,63,94,.08), var(--surface));
-    }
-    .pricing-card.featured::before {
-      content: 'MOST REJECTED'; position: absolute; top: -12px;
-      left: 50%; transform: translateX(-50%); padding: .3rem 1rem;
-      border-radius: 100px; font-size: .7rem; font-weight: 700;
-      background: var(--gradient); color: #fff;
-    }
-    .pricing-tier { font-weight: 700; font-size: 1.1rem; margin-bottom: .5rem; }
-    .pricing-amount {
-      font-size: 3rem; font-weight: 900; margin: 1rem 0;
-    }
-    .pricing-amount span { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
-    .pricing-features {
-      list-style: none; margin: 1.5rem 0; text-align: left;
-    }
-    .pricing-features li {
-      padding: .5rem 0; font-size: .9rem; color: var(--text-muted);
-      display: flex; align-items: center; gap: .5rem;
-    }
-    .pricing-features li::before {
-      content: '✕'; color: var(--accent); font-weight: 700;
-    }
-    .pricing-btn {
-      width: 100%; padding: .75rem; border-radius: 10px;
-      font-size: .95rem; font-weight: 600; cursor: pointer;
-      font-family: inherit; transition: opacity .2s;
-    }
-    .pricing-btn-outline {
-      background: transparent; border: 1px solid var(--border); color: var(--text);
-    }
-    .pricing-btn-outline:hover { border-color: var(--text-muted); }
-    .pricing-btn-filled {
-      background: var(--gradient); border: none; color: #fff;
-    }
-    .pricing-btn-filled:hover { opacity: .85; }
-
     /* ── API Credits Footer ── */
     .api-credits {
       padding: 3rem 2rem; background: var(--surface);
@@ -486,7 +436,6 @@
       <li><a href="#dashboard">Dashboard</a></li>
       <li><a href="#gauntlet">The Gauntlet</a></li>
       <li><a href="#features">Features</a></li>
-      <li><a href="#pricing">Pricing</a></li>
     </ul>
     <button class="nav-cta" onclick="rejectSignup()">Get Rejected Free</button>
   </nav>
@@ -757,49 +706,6 @@
     </div>
   </section>
 
-  <!-- Pricing -->
-  <section id="pricing">
-    <div class="section-header fade-in">
-      <h2>Simple, Transparent Rejection</h2>
-      <p>Every plan includes unlimited disappointment from all 6 APIs.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="pricing-card fade-in">
-        <div class="pricing-tier">Starter</div>
-        <div class="pricing-amount">$0<span>/mo</span></div>
-        <ul class="pricing-features">
-          <li>100 rejections/month</li>
-          <li>Basic insults (1 API)</li>
-          <li>Weekly useless facts</li>
-          <li>No support (obviously)</li>
-        </ul>
-        <button class="pricing-btn pricing-btn-outline" onclick="rejectSignup()">Get Rejected</button>
-      </div>
-      <div class="pricing-card featured fade-in">
-        <div class="pricing-tier">Professional</div>
-        <div class="pricing-amount">$29<span>/mo</span></div>
-        <ul class="pricing-features">
-          <li>Unlimited rejections</li>
-          <li>All 6 negativity APIs</li>
-          <li>The Gauntlet (unlimited runs)</li>
-          <li>Rejection analytics PDF for your therapist</li>
-        </ul>
-        <button class="pricing-btn pricing-btn-filled" onclick="rejectSignup()">Get Brutalized</button>
-      </div>
-      <div class="pricing-card fade-in">
-        <div class="pricing-tier">Enterprise</div>
-        <div class="pricing-amount">$499<span>/mo</span></div>
-        <ul class="pricing-features">
-          <li>Org-wide mass rejection</li>
-          <li>Custom insult training on your codebase</li>
-          <li>SSO (Single Sign-Off)</li>
-          <li>Dedicated rejection manager</li>
-        </ul>
-        <button class="pricing-btn pricing-btn-outline" onclick="rejectSignup()">Contact Rejection Team</button>
-      </div>
-    </div>
-  </section>
-
   <!-- API Credits -->
   <div class="api-credits">
     <h3>Powered by these (very real) APIs</h3>
@@ -842,10 +748,17 @@
     let heroInterval = null;
     let dashboardInterval = null;
 
+    function fetchWithTimeout(url, ms = 5000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      return fetch(url, { signal: controller.signal, cache: 'no-store' })
+        .finally(() => clearTimeout(timer));
+    }
+
     // ── Fetchers ──
     async function fetchReject() {
       try {
-        const r = await fetch(APIS.reject);
+        const r = await fetchWithTimeout(APIS.reject);
         const d = await r.json();
         return d.reason || 'No.';
       } catch { return 'Even our rejection API rejected you.'; }
@@ -853,7 +766,7 @@
 
     async function fetchInsult() {
       try {
-        const r = await fetch(APIS.insult);
+        const r = await fetchWithTimeout(APIS.insult);
         const d = await r.json();
         return d.insult || 'You are uninsultable. Wait, no you aren\'t.';
       } catch { return 'The insult server crashed looking at your code.'; }
@@ -861,15 +774,16 @@
 
     async function fetchAdvice() {
       try {
-        const r = await fetch(APIS.advice);
-        const d = await r.json();
+        const r = await fetchWithTimeout(APIS.advice + '?t=' + Date.now());
+        const text = await r.text();
+        const d = JSON.parse(text);
         return d.slip?.advice || 'Just give up.';
       } catch { return 'Here\'s some advice: stop asking for advice.'; }
     }
 
     async function fetchFact() {
       try {
-        const r = await fetch(APIS.fact);
+        const r = await fetchWithTimeout(APIS.fact);
         const d = await r.json();
         return d.text || 'No facts found. Just like your project\'s future.';
       } catch { return 'Fun fact: this API also gave up on you.'; }
@@ -877,7 +791,7 @@
 
     async function fetchRoast() {
       try {
-        const r = await fetch(APIS.roast);
+        const r = await fetchWithTimeout(APIS.roast);
         const d = await r.json();
         return d.insult || 'You are impressively mediocre.';
       } catch { return 'The roast API couldn\'t find words strong enough.'; }
@@ -885,7 +799,7 @@
 
     async function fetchJoke() {
       try {
-        const r = await fetch(APIS.joke);
+        const r = await fetchWithTimeout(APIS.joke);
         const d = await r.json();
         return d.setup && d.punchline ? `${d.setup} — ${d.punchline}` : 'No joke. Literally.';
       } catch { return 'Why did the joke API fail? Because even humor gives up sometimes.'; }
@@ -968,28 +882,36 @@
         document.getElementById(`g-text-${i}`).innerHTML = '<span class="spinner"></span>';
       }
 
-      const steps = [
-        { id: 1, fetcher: fetchReject,  prefix: 'RE: "' + input.value + '" — ' },
-        { id: 2, fetcher: fetchInsult,  prefix: '' },
-        { id: 3, fetcher: fetchRoast,   prefix: 'Annual review: ' },
-        { id: 4, fetcher: fetchAdvice,  prefix: 'Instead, maybe: ' },
-        { id: 5, fetcher: fetchFact,    prefix: 'Did you know? ' },
-        { id: 6, fetcher: fetchJoke,    prefix: '' },
+      const prefixes = [
+        'RE: "' + input.value + '" — ',
+        '',
+        'Annual review: ',
+        'Instead, maybe: ',
+        'Did you know? ',
+        '',
       ];
 
-      for (const step of steps) {
-        const stepEl = document.getElementById(`g-step-${step.id}`);
+      const results = await Promise.allSettled([
+        fetchReject(), fetchInsult(), fetchRoast(),
+        fetchAdvice(), fetchFact(), fetchJoke()
+      ]);
+
+      for (let i = 0; i < 6; i++) {
+        const stepEl = document.getElementById(`g-step-${i + 1}`);
         stepEl.classList.add('visible');
 
-        await new Promise(r => setTimeout(r, 600));
-        const text = await step.fetcher();
+        await new Promise(r => setTimeout(r, 500));
 
-        document.getElementById(`g-text-${step.id}`).innerHTML =
-          `<em>${step.prefix}${text}</em>`;
+        const text = results[i].status === 'fulfilled'
+          ? results[i].value
+          : 'This API ghosted us. Classic.';
+
+        const safe = escapeHtml(prefixes[i] + text);
+        document.getElementById(`g-text-${i + 1}`).innerHTML = `<em>${safe}</em>`;
 
         rejectionCount++;
         updateCounter();
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 250));
       }
 
       btn.textContent = 'Run Again';
