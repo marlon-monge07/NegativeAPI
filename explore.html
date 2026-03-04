@@ -186,20 +186,6 @@
     .poke-stat-label { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
     .poke-stat-value { font-size: 1.1rem; font-weight: 700; }
 
-    /* ── Star Wars ── */
-    .sw-border { border-left: 3px solid var(--yellow); }
-    .tag-sw { background: rgba(234,179,8,.15); color: var(--yellow); }
-    .sw-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .sw-profile { flex: 1; min-width: 220px; }
-    .sw-name { font-size: 1.75rem; font-weight: 800; margin-bottom: .75rem; }
-    .sw-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .75rem; }
-    .sw-stat {
-      padding: .75rem; border-radius: 10px; background: var(--bg);
-      border: 1px solid var(--border);
-    }
-    .sw-stat-label { font-size: .65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
-    .sw-stat-value { font-size: 1rem; font-weight: 700; text-transform: capitalize; }
-
     /* ── NASA ── */
     .nasa-border { border-left: 3px solid var(--blue); }
     .tag-nasa { background: rgba(59,130,246,.15); color: var(--blue); }
@@ -254,44 +240,6 @@
     .num-type-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(6,182,212,.1); }
     .num-type-btn:hover { border-color: var(--cyan); }
 
-    /* ── Fun Translations ── */
-    .fun-border { border-left: 3px solid var(--green); }
-    .tag-fun { background: rgba(34,197,94,.15); color: var(--green); }
-    .fun-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .fun-input {
-      flex: 1; min-width: 200px; padding: .75rem 1rem;
-      border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg); color: var(--text);
-      font-size: .95rem; font-family: inherit; outline: none;
-      transition: border-color .2s;
-    }
-    .fun-input:focus { border-color: var(--green); }
-    .fun-select {
-      padding: .75rem 1rem; border-radius: 10px;
-      border: 1px solid var(--border); background: var(--bg);
-      color: var(--text); font-size: .9rem; font-family: inherit;
-      outline: none; cursor: pointer;
-    }
-    .fun-translate-btn {
-      padding: .75rem 1.5rem; border-radius: 10px; border: none;
-      background: linear-gradient(135deg, var(--green), #059669);
-      color: #fff; font-size: .9rem; font-weight: 700;
-      font-family: inherit; cursor: pointer; transition: opacity .2s;
-    }
-    .fun-translate-btn:hover { opacity: .85; }
-    .fun-translate-btn:disabled { opacity: .4; cursor: not-allowed; }
-    .fun-result {
-      padding: 1.25rem; border-radius: 12px; background: var(--bg);
-      border: 1px solid var(--border); min-height: 60px;
-    }
-    .fun-result-text {
-      font-size: 1.05rem; font-weight: 500; font-style: italic;
-      transition: opacity .4s;
-    }
-    .fun-rate-note {
-      font-size: .7rem; color: var(--text-muted); margin-top: .75rem;
-    }
-
     /* ── Shared ── */
     .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s, transform .6s; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -323,7 +271,6 @@
       .panel-body { padding: 1.25rem; }
       .poke-layout { justify-content: center; text-align: center; }
       .poke-stats { justify-items: center; }
-      .sw-stats { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -397,31 +344,6 @@
     </div>
   </section>
 
-  <!-- Star Wars -->
-  <section>
-    <div class="api-panel sw-border fade-in">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span class="emoji">⭐</span>
-          <h2>Star Wars Character</h2>
-        </div>
-        <span class="panel-tag tag-sw">SWAPI</span>
-      </div>
-      <div class="panel-body">
-        <div class="sw-layout" id="sw-content">
-          <div class="sw-profile" style="width:100%">
-            <div class="sw-name" id="sw-name">Loading from a galaxy far, far away...</div>
-            <div class="sw-stats" id="sw-stats"></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel-footer">
-        <div class="panel-source"><span class="dot"></span> swapi.dev</div>
-        <button class="refresh-btn" onclick="loadStarWars()">Next Character <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
-    </div>
-  </section>
-
   <!-- Numbers API -->
   <section>
     <div class="api-panel num-border fade-in">
@@ -447,39 +369,6 @@
       <div class="panel-footer">
         <div class="panel-source"><span class="dot"></span> numbersapi.com</div>
         <button class="refresh-btn" onclick="loadNumber()">Next Number <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Fun Translations -->
-  <section>
-    <div class="api-panel fun-border fade-in">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span class="emoji">🗣️</span>
-          <h2>Fun Translations</h2>
-        </div>
-        <span class="panel-tag tag-fun">FunTranslations</span>
-      </div>
-      <div class="panel-body">
-        <div class="fun-row">
-          <input class="fun-input" id="fun-input" type="text" placeholder='Type something to translate... e.g. "I am your father"' />
-          <select class="fun-select" id="fun-lang">
-            <option value="yoda">Yoda</option>
-            <option value="pirate">Pirate</option>
-            <option value="minion">Minion</option>
-            <option value="dothraki">Dothraki</option>
-            <option value="shakespeare">Shakespeare</option>
-          </select>
-          <button class="fun-translate-btn" id="fun-btn" onclick="translateText()">Translate</button>
-        </div>
-        <div class="fun-result">
-          <div class="fun-result-text" id="fun-result">Your translation will appear here...</div>
-        </div>
-        <div class="fun-rate-note">Free tier: 5 calls/hour, 60 calls/day. Use wisely, young padawan.</div>
-      </div>
-      <div class="panel-footer">
-        <div class="panel-source"><span class="dot"></span> funtranslations.com</div>
       </div>
     </div>
   </section>
@@ -589,35 +478,6 @@
       }
     }
 
-    // ── Star Wars ──
-    async function loadStarWars() {
-      const id = Math.floor(Math.random() * 82) + 1;
-      try {
-        const r = await fetchWithTimeout(`https://swapi.dev/api/people/${id}/?format=json`, 8000);
-        const d = await r.json();
-
-        document.getElementById('sw-name').textContent = d.name;
-
-        const stats = [
-          { label: 'Height', value: d.height !== 'unknown' ? `${d.height} cm` : 'Unknown' },
-          { label: 'Mass', value: d.mass !== 'unknown' ? `${d.mass} kg` : 'Unknown' },
-          { label: 'Hair Color', value: d.hair_color },
-          { label: 'Eye Color', value: d.eye_color },
-          { label: 'Birth Year', value: d.birth_year },
-          { label: 'Gender', value: d.gender },
-        ];
-        document.getElementById('sw-stats').innerHTML = stats.map(s => `
-          <div class="sw-stat">
-            <div class="sw-stat-label">${s.label}</div>
-            <div class="sw-stat-value">${s.value}</div>
-          </div>
-        `).join('');
-      } catch {
-        document.getElementById('sw-name').textContent = 'Disturbance in the Force...';
-        document.getElementById('sw-stats').innerHTML = '<div class="sw-stat"><div class="sw-stat-label">Error</div><div class="sw-stat-value">API unavailable</div></div>';
-      }
-    }
-
     // ── Numbers API ──
     let numType = 'trivia';
 
@@ -661,45 +521,6 @@
           el.classList.remove('fading');
         }, 300);
       }
-    }
-
-    // ── Fun Translations ──
-    async function translateText() {
-      const input = document.getElementById('fun-input');
-      const lang = document.getElementById('fun-lang').value;
-      const btn = document.getElementById('fun-btn');
-      const result = document.getElementById('fun-result');
-
-      if (!input.value.trim()) input.value = 'I am your father';
-
-      btn.disabled = true;
-      btn.textContent = 'Translating...';
-      result.classList.add('fading');
-
-      try {
-        const r = await fetchWithTimeout(
-          `https://api.funtranslations.com/translate/${lang}.json?text=${encodeURIComponent(input.value)}`,
-          8000
-        );
-        const d = await r.json();
-        if (d.error) throw new Error(d.error.message || 'Rate limited');
-        setTimeout(() => {
-          result.textContent = `"${d.contents.translated}"`;
-          result.style.color = 'var(--green)';
-          result.classList.remove('fading');
-        }, 300);
-      } catch (e) {
-        setTimeout(() => {
-          result.textContent = e.message?.includes('limit')
-            ? 'Rate limit reached — the free tier allows 5 calls/hour. Try again later!'
-            : 'Translation failed — the API might be rate-limited or unavailable.';
-          result.style.color = 'var(--accent)';
-          result.classList.remove('fading');
-        }, 300);
-      }
-
-      btn.disabled = false;
-      btn.textContent = 'Translate';
     }
 
     // ── NASA APOD ──
@@ -755,13 +576,8 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // ── Enter key for Fun Translations ──
-    document.getElementById('fun-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') translateText();
-    });
-
     // ── Init ──
-    Promise.allSettled([loadChuck(), loadPokemon(), loadStarWars(), loadNumber(), loadNasa()]);
+    Promise.allSettled([loadChuck(), loadPokemon(), loadNumber(), loadNasa()]);
   </script>
 
 </body>
